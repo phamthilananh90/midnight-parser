@@ -1,0 +1,68 @@
+[Unit]
+Description=Steam User API Proxy
+After=network.target
+
+[Service]
+# Environment variables
+Environment=PORT=3000
+Environment=RUST_LOG=info
+Environment=APP_ENV=production
+
+# Log Management & Rate Limiting
+# Prevent a single service from flooding the journal
+LogRateLimitIntervalSec=30s
+LogRateLimitBurst=1000
+
+# Execution
+# Assumes the binary is installed at /usr/local/bin/steam-user-api
+ExecStart=/usr/local/bin/steam-user-api
+Restart=on-failure
+RestartSec=5s
+
+# User/Group - DynamicUser creates a transient user/group for the service
+DynamicUser=yes
+RuntimeDirectory=steam-user-api
+
+# Security Hardening
+# Basic isolation
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+NoNewPrivileges=yes
+
+# Kernel/Hardware protection
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+ProtectProc=invisible
+ProcSubset=pid
+
+# Filesystem restrictions
+# Mount /usr, /boot, /etc as read-only (ProtectSystem=strict does this)
+# If the app needs a writable directory, use StateDirectory
+# StateDirectory=steam-user-api # Creates /var/lib/steam-user-api
+
+# Capability restrictions
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+# Network restrictions
+# Allow IPv4, IPv6, and Unix sockets
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+IPAddressDeny=any
+IPAddressAllow=localhost
+# Uncomment if it needs to talk to Steam servers (it likely does)
+IPAddressAllow=any
+
+# Misc hardening
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+MemoryDenyWriteExecute=yes
+LockPersonality=yes
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

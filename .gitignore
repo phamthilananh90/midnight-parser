@@ -1,0 +1,14 @@
+/target
+**/*.rs.bk
+*.pdb
+.env
+
+# IDE / editor
+/.idea
+/.vscode
+
+# OMC / Claude Code session state
+/.omc
+
+# Playwright MCP browser artifacts
+/.playwright-mcp
