@@ -1,3 +1,14 @@
+---
+title: Rust Axum Server
+emoji: 🦀
+colorFrom: blue
+colorTo: red
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
+
 # steam-user-api
 
 REST API proxy for the [`steam-user`](https://crates.io/crates/steam-user) crate, built with [Axum](https://github.com/tokio-rs/axum). Exposes Steam account operations as JSON endpoints that can be consumed by any HTTP client.
