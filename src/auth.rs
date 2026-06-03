@@ -235,7 +235,17 @@ impl IntoResponse for ApiError {
             ApiError::Steam(e) => match e {
                 steam_user::SteamUserError::RateLimited => StatusCode::TOO_MANY_REQUESTS,
                 steam_user::SteamUserError::NotLoggedIn | steam_user::SteamUserError::SessionExpired => StatusCode::UNAUTHORIZED,
-                _ => StatusCode::BAD_GATEWAY,
+                // Genuinely transient/upstream failures (5xx HTTP, connect/timeout,
+                // middleware) stay 5xx so the `RemoteSteamUser` client keeps retrying
+                // across the proxy fleet.
+                e if e.is_retryable() => StatusCode::BAD_GATEWAY,
+                // Everything else is a terminal Steam-side outcome — deterministic
+                // business rejections (e.g. "too many outstanding trade offers") and
+                // unparseable responses. Return 4xx so the client treats it as terminal
+                // and does NOT retry: re-sending non-idempotent calls like
+                // `send_trade_offer` across the fleet would otherwise create duplicate
+                // offers and burn the whole fleet on a request that can never succeed.
+                _ => StatusCode::UNPROCESSABLE_ENTITY,
             },
             ApiError::Internal(_) | ApiError::Join(_) | ApiError::Io(_) => StatusCode::INTERNAL_SERVER_ERROR,
             ApiError::BadRequest(_) | ApiError::Serialization(_) => StatusCode::BAD_REQUEST,
