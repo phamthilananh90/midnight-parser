@@ -7,6 +7,15 @@ pub fn routes() -> Router {
     Router::new().route("/health", get(health)).route("/ready", get(ready))
 }
 
+/// Unauthenticated top-level convenience aliases reusing the same handlers.
+/// Mounted at the router root (outside the `/api` prefix and auth middleware).
+pub fn root_routes() -> Router {
+    Router::new()
+        .route("/", get(health))
+        .route("/health", get(health))
+        .route("/ready", get(ready))
+}
+
 #[derive(Serialize)]
 struct HealthResponse {
     status: &'static str,

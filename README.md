@@ -254,6 +254,21 @@ Each route's path is the handler **function name**, i.e. `POST /api/<module>/<fu
 
 > **Other modules** (not tabled above) follow the same `function_name` path convention: `/api/activity/*`, `/api/comments/*`, `/api/email/*`, `/api/extra/*`, `/api/groups/*`, `/api/phone/*`. See the handler names in `src/routes/<module>.rs`, or the typed client in `steam_user::remote::RemoteSteamUser`.
 
+---
+
+### Status / Health — no auth required
+
+| Endpoint                  | Description                          |
+|---------------------------|--------------------------------------|
+| `GET /`                   | Liveness alias (same as `/health`)   |
+| `GET /health`             | Liveness check                       |
+| `GET /ready`              | Readiness check                      |
+| `GET /api/status/health`  | Same liveness check (canonical path) |
+| `GET /api/status/ready`   | Same readiness check (canonical path)|
+
+All five return `{ "success": true, "data": { "status": "ok" | "ready", "version": "<semver>" } }`.
+The top-level aliases (`/`, `/health`, `/ready`) are convenience routes that bypass the `API_KEY` gate just like `/api/status/*`.
+
 ## Example
 
 ```bash

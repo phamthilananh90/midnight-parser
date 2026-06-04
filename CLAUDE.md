@@ -25,7 +25,7 @@ Three source areas: `main.rs` (bootstrap), `auth.rs` (the shared request/respons
 
 ### Request flow
 
-1. `routes::all_routes()` (`src/routes.rs`) nests every feature module under `/api` and applies the `api_key_auth` middleware. `/api/status` is nested *outside* that middleware so health checks need no API key.
+1. `routes::all_routes()` (`src/routes.rs`) nests every feature module under `/api` and applies the `api_key_auth` middleware. `/api/status` is nested *outside* that middleware so health checks need no API key. Top-level aliases `GET /`, `GET /health`, and `GET /ready` are merged at the router root (also unauthenticated) via `status::root_routes()`.
 2. `api_key_auth` (`src/auth.rs`) checks the `Authorization` header against the `API_KEY` env var (accepts both `Bearer <key>` and the bare key). If `API_KEY` is unset, **all** `/api/*` requests are rejected as unauthorized.
 3. Handlers extract `SteamUserAuth<T>`, a custom `FromRequest` extractor that deserializes the JSON body, builds a `steam_user::SteamUser` from the auth fields, and exposes `{ user, auth, data }`.
 
