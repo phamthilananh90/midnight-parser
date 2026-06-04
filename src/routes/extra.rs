@@ -71,11 +71,9 @@ async fn get_help_request_detail(SteamUserAuth { user, data: req, .. }: SteamUse
 }
 
 async fn get_match_history(SteamUserAuth { user, data: req, .. }: SteamUserAuth<MatchHistoryReq>) -> Result<ApiResponse<serde_json::Value>, ApiError> {
-    let match_type = match req.match_type.as_str() {
-        "competitive" => steam_user::MatchHistoryType::Competitive,
-        "wingman" => steam_user::MatchHistoryType::Wingman,
-        "scrimmage" => steam_user::MatchHistoryType::Scrimmage,
-        _ => return Err(ApiError::BadRequest(format!("Unknown match_type: {}", req.match_type))),
-    };
+    let match_type: steam_user::MatchHistoryType = req
+        .match_type
+        .parse()
+        .map_err(|_| ApiError::BadRequest(format!("Unknown match_type: {}", req.match_type)))?;
     ApiResponse::json(user.get_match_history(match_type, req.token.as_deref()).await?)
 }
