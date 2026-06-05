@@ -85,7 +85,16 @@ async fn revoke_token(SteamUserAuth { user, data: req, .. }: SteamUserAuth<Revok
     OK
 }
 
-async fn renew_access_token(SteamUserAuth { mut user, .. }: SteamUserAuth) -> Result<ApiResponse<&'static str>, ApiError> {
+/// Renew the access token from the stored refresh token and **return the
+/// renewed material**. The server is stateless (a fresh `SteamUser` per
+/// request), so the caller can only persist the new tokens if we hand them
+/// back — returning a bare `"ok"` would discard the renewal. Mirrors what
+/// `RemoteSteamUser::renew_access_token` deserializes on the client.
+async fn renew_access_token(SteamUserAuth { mut user, .. }: SteamUserAuth) -> Result<ApiResponse<serde_json::Value>, ApiError> {
     user.renew_access_token().await?;
-    OK
+    Ok(ApiResponse::ok(serde_json::json!({
+        "access_token": user.session.access_token(),
+        "refresh_token": user.session.refresh_token(),
+        "cookies": user.get_web_cookies(),
+    })))
 }
