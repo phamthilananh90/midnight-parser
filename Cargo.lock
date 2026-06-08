@@ -2545,9 +2545,9 @@ dependencies = [
 
 [[package]]
 name = "steam-user"
-version = "0.1.3"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10e91de2c34daf5c2f759154dc53b1f8ce0b33ed2c1bec8d47d503d91a60a177"
+checksum = "14d2fd0fcc4e3fb4e079db7b558dd1e7db21bc724f615b970a79b98dae6376fe"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2610,9 +2610,9 @@ dependencies = [
 
 [[package]]
 name = "steam-user-impl"
-version = "0.1.3"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f9d9653f1c36d5c7c07e0e8b39d7a5240b3dbfda2c14c763577290e361421080"
+checksum = "46648c1d727adbf508055e1656d60adfa610f3144f69082da1e0946420b689c4"
 dependencies = [
  "proc-macro2",
  "quote",

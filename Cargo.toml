@@ -7,7 +7,7 @@ repository = "https://github.com/pieckenst/steam-user-rs"
 description = "REST API proxy for steam-user crate using Axum"
 
 [dependencies]
-steam-user = "0.1.3"
+steam-user = "0.2.0"
 steamid = { package = "steamid-rs", version = "2.1.0" }
 steam-totp = { package = "steam-totp-rs", version = "0.1.0" }
 steam-protos = { version = "0.1.0", features = ["serde"] }
