@@ -209,6 +209,9 @@ pub enum ApiError {
     #[error("Steam error: {0:#}")]
     Steam(#[from] steam_user::SteamUserError),
 
+    #[error("Login error: {0:#}")]
+    Login(#[from] steam_auth::SessionError),
+
     #[allow(dead_code)]
     #[error("Internal error: {0}")]
     Internal(String),
@@ -245,6 +248,23 @@ impl IntoResponse for ApiError {
                 // and does NOT retry: re-sending non-idempotent calls like
                 // `send_trade_offer` across the fleet would otherwise create duplicate
                 // offers and burn the whole fleet on a request that can never succeed.
+                _ => StatusCode::UNPROCESSABLE_ENTITY,
+            },
+            // Login failures: distinguish a per-IP throttle (retry on another
+            // node helps — different IP) from a deterministic rejection (bad
+            // password / bad guard code — every node gives the same answer).
+            ApiError::Login(e) => match e {
+                // Per-IP login throttle / rate limit → retryable so the
+                // RemoteSteamUser client retries the login on the next node.
+                steam_auth::SessionError::RateLimited
+                | steam_auth::SessionError::SteamError(_, steam_enums::EResult::AccountLoginDeniedThrottle | steam_enums::EResult::RateLimitExceeded) => StatusCode::TOO_MANY_REQUESTS,
+                // Transport / transient faults → 5xx so the client keeps trying.
+                steam_auth::SessionError::NetworkError(_) | steam_auth::SessionError::HttpError(_) | steam_auth::SessionError::Timeout | steam_auth::SessionError::WebSocketError(_) => {
+                    StatusCode::BAD_GATEWAY
+                }
+                // Everything else (invalid credentials, bad/expired guard code,
+                // unsupported guard action) is deterministic — terminal 4xx so
+                // the client does not waste the fleet retrying a doomed login.
                 _ => StatusCode::UNPROCESSABLE_ENTITY,
             },
             ApiError::Internal(_) | ApiError::Join(_) | ApiError::Io(_) => StatusCode::INTERNAL_SERVER_ERROR,

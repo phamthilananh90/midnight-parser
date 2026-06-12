@@ -1,5 +1,6 @@
 pub mod account;
 pub mod activity;
+pub mod auth;
 pub mod common;
 pub mod apps;
 pub mod comments;
@@ -23,7 +24,7 @@ use axum::{middleware, Router};
 
 /// Build the full API router with all service routes nested under `/api`.
 pub fn all_routes() -> Router {
-    let api_routes = crate::nest_routes!(Router::new(), account, activity, apps, comments, confirmations, email, extra, friends, groups, inventory, market, misc, phone, privacy, profile, tokens, trade, twofactor,).layer(middleware::from_fn(crate::auth::api_key_auth));
+    let api_routes = crate::nest_routes!(Router::new(), account, activity, auth, apps, comments, confirmations, email, extra, friends, groups, inventory, market, misc, phone, privacy, profile, tokens, trade, twofactor,).layer(middleware::from_fn(crate::auth::api_key_auth));
 
     Router::new()
         .merge(status::root_routes())
