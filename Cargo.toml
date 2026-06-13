@@ -1,13 +1,13 @@
 [package]
 name = "steam-user-api"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/pieckenst/steam-user-rs"
 description = "REST API proxy for steam-user crate using Axum"
 
 [dependencies]
-steam-user = "0.2.3"
+steam-user = "0.2.4"
 steam-auth = { package = "steam-auth-rs", version = "0.1.0" }
 steam-enums = "0.1.0"
 steamid = { package = "steamid-rs", version = "2.1.0" }

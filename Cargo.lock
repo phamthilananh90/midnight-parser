@@ -3061,9 +3061,9 @@ dependencies = [
 
 [[package]]
 name = "steam-user"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eceba6a05a5d8b9b6501bf109bca41d70947e78511bfb885f3f6e39edb6cdde4"
+checksum = "67423025d7808422023570ee41017c66040ef3b42938df331220057cc2c1852a"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -3107,7 +3107,7 @@ dependencies = [
 
 [[package]]
 name = "steam-user-api"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "axum",
  "dashmap 6.2.1",
@@ -3130,9 +3130,9 @@ dependencies = [
 
 [[package]]
 name = "steam-user-impl"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8acd4bb5d28cd2f1a68b6df71a7bada3971bebdc421e2c687a92a5111225589a"
+checksum = "d863770e36e344ac9577df7b3022d83d1c2c5182ff53a408c10d4d533df59e9a"
 dependencies = [
  "proc-macro2",
  "quote",
